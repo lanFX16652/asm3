@@ -1,0 +1,54 @@
+POST http://localhost:5000/client/signup
+Content-Type: application/json
+
+{
+   "fullname": "LAN TRAN",
+    "email": "lan@mail.com",
+    "password": "123",
+    "phone": "1234567890"
+}
+
+#######
+
+POST http://localhost:5000/admin/product/create
+Content-Type: application/json
+
+{
+"name": "test",
+"price": "12.312",
+"description": "2123",
+"photos": "12321"
+}
+
+#######
+
+#######
+
+POST http://localhost:5000/client/login
+Content-Type: application/json
+
+{
+"email": "lan@mail.com",
+"password": "123456"
+}
+
+#######
+
+#######
+
+POST http://localhost:5000/client/logout
+Content-Type: application/json
+
+{
+}
+
+#######
+
+GET http://localhost:5000/related-product?category=watch&id=64aea5e066b6bea8a0b4d8ea
+Content-Type: application/json
+
+#######
+
+
+
+

@@ -1,0 +1,38 @@
+.banner {
+  position: relative;
+}
+
+.banner img {
+  height: auto;
+  width: 100%;
+  object-fit: contain;
+}
+
+.banner-content-wrapper {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+}
+.banner-content-wrapper h6 {
+  color: #a1a4b3;
+  font-style: italic;
+  font-weight: 400;
+}
+.banner-button {
+  background-color: #383838;
+  color: white;
+  padding: 8px;
+  border: none;
+  font-style: italic;
+  font-weight: 100;
+}
+
+@media only screen and (max-width: 768px) {
+  .banner-content-wrapper {
+    font-size: x-small;
+  }
+
+  .banner-content-wrapper h1 {
+    font-size: large;
+  }
+}
