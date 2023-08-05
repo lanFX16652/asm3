@@ -1,19 +1,16 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import classes from "./MainNavigation.module.css";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Container from "react-bootstrap/esm/Container";
 import { selectUser } from "../../store/userSlice";
-import { Menu, Popover } from "antd";
+import { Menu, Popover, Space } from "antd";
 import { useLogout } from "../../apis/logout";
 
 function MainNavigation() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector(selectUser)
   const [logout] = useLogout()
-
-
 
   return (
     <Container>
@@ -45,56 +42,45 @@ function MainNavigation() {
 
         <h1>BOUTIQUE</h1>
 
-        <ul>
-          <li>
-            <NavLink
-              to='/checkout'
-              className={(navData) => {
+        <Space  >
+          <NavLink
+            to='/checkout'
+            className={(navData) => {
 
-                return (navData.isActive ? classes.active : "")
-              }}
-            >
-              Cart
-            </NavLink>
-          </li>
-
+              return (navData.isActive ? classes.active : "")
+            }}
+          >
+            Cart
+          </NavLink>
           {
-            <li>
-              {user ? (
-                <Popover trigger='click' content={
-                  <Menu items={[
+
+            user ? (
+              <Popover trigger='click' content={
+                < Menu items={
+                  [
                     {
                       label: 'History',
                       onClick: () => navigate('/history')
                     },
                     {
-                      label: 'Logout',
+                      label: 'Log out',
                       onClick: logout
                     },
-                    {
-                      label: 'login',
-                      onClick: () => navigate('/login')
-                    }
                   ]} />
-                } >
-                  User
-                </Popover>
-                // <NavLink onClick={() => { }}>
-
-                // </NavLink>
-              ) : (
-                <NavLink
-                  to='/login'
-                  className={(navData) => {
-                    return (navData.isActive ? classes.active : "")
-                  }}
-                >
-                  Login
-                </NavLink>
-              )}
-            </li>
-          }
-        </ul>
+              } >
+                {user.fullname}
+              </Popover>
+            ) : (
+              <NavLink
+                to='/login'
+                className={(navData) => {
+                  return (navData.isActive ? classes.active : "")
+                }}
+              >
+                Login
+              </NavLink>
+            )}
+        </Space>
       </nav>
     </Container >
   );

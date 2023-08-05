@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classes from "./Login.module.css";
 import { Button, Form, Input, Space, Typography } from "antd";
 import background from "../../assets/images/banner1.jpg";

@@ -4,7 +4,6 @@ import cors from "cors";
 import mongoose from "mongoose";
 import session from 'express-session'
 import cookieParser from "cookie-parser";
-import { oneDay } from './constant/index.js'
 import authenticateRoute from "./routers/auth.js";
 import productRoute from "./routers/product.js";
 //  constance
@@ -21,9 +20,15 @@ const PORT = process.env.PORT || 5000;
 import MongoDBStore from 'connect-mongodb-session';
 import mediaRoute from "./routers/media.js";
 import userModel from "./models/userModel.js";
+import cartRoute from "./routers/cart.js";
 
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: 'http://localhost:3000',
+        credentials: true
+    }
+));
 app.use(express.json());
 app.use(cookieParser())
 
@@ -48,23 +53,18 @@ app.use(session({
 
 
 app.use(async (req, res, next) => {
-    if (!req.session.user) {
-        next()
+    if (req.session?.userId) {
+        const user = await userModel.findById(req.session.userId)
+        req.user = user
     }
 
-    try {
-        const user = await userModel.findById(req.session.user._id)
-        req.user = user
-        next()
-    } catch (error) {
-        console.log(error)
-    }
+    next()
 })
 
 //init web routes
 app.use(authenticateRoute);
 app.use(productRoute);
-
+app.use(cartRoute)
 mediaRoute(app)
 
 app.use((err, req, res, next) => {
