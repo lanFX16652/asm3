@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "64c10dcdbaa5927d2ab11250"
+  },
+  "fullname": "tran ngoc lan",
+  "email": "lan@mail.com",
+  "password": "$2a$10$We3gR/rS0UXc.Uh2lBv6cujjRJjgff.K1jOfI.BUmk/yfM16NPG/u",
+  "phone": 123456,
+  "isAdmin": false,
+  "orders": [],
+  "__v": 0,
+  "role": "customer"
+},
+{
+  "_id": {
+    "$oid": "64c26c59217ee29daacf2607"
+  },
+  "fullname": "asda",
+  "email": "t@gmail.com",
+  "password": "$2a$10$LC0ywFmwxlSynMy.r5ddOujVZt0d8jrU5pEDC831P7lC0Iw4sLlDS",
+  "phone": 123,
+  "isAdmin": false,
+  "orders": [],
+  "__v": 0,
+  "role": "admin"
+},
+{
+  "_id": {
+    "$oid": "64e5f382ccf60f8dea621ef2"
+  },
+  "fullname": "tran quang phong",
+  "email": "phong@mail.com",
+  "password": "$2a$10$j03CP2/Ynsrv3tV.1OFAyOTZRipfVctbjaFeSkAJID3qoM9lA.5ae",
+  "phone": 123,
+  "orders": [],
+  "__v": 0,
+  "role": "saler"
+}]
