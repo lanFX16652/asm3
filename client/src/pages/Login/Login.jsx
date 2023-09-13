@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Login.module.css";
 import { Button, Form, Input, Space, Typography } from "antd";
 import background from "../../assets/images/banner1.jpg";
@@ -6,6 +6,7 @@ import { useLogin } from "../../apis/login";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { setUser } from "../../store/userSlice";
+import { LocalStorageService } from "../../services";
 
 const Login = () => {
   // react bootstrap
@@ -84,10 +85,13 @@ const Login = () => {
     fetchUseLogin(values.email, values.password);
   };
 
-  if (currentUser) {
-    dispatch(setUser(currentUser));
-    navigate("/");
-  }
+  useEffect(() => {
+    if (currentUser) {
+      dispatch(setUser(currentUser));
+      LocalStorageService.store("user", currentUser);
+      navigate("/");
+    }
+  }, [currentUser]);
 
   return (
     <div className={classes.wrapper}>

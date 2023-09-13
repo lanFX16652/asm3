@@ -6,12 +6,12 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./store/index";
-import { getTotals } from "./store/cartSlice";
+
 
 //import Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 
-store.dispatch(getTotals());
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

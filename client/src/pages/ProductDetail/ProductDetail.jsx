@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import classes from "./ProductDetail.module.css";
 import { useGetProduct } from "../../apis/product";
 import { useGetRelatedProducts } from "../../apis/product";
@@ -17,14 +18,16 @@ import { useAddToCart } from "../../apis/cart";
 import { notification, Button } from "antd";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../store/userSlice";
+import { postAddItem, selectCartLoading } from "../../store/cartSlice";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product] = useGetProduct(id);
   const [relatedProducts, fetchRelateProduct] = useGetRelatedProducts();
   const { addToCart, isLoading, isSuccess } = useAddToCart();
-
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
+  const isLoadingCart = useSelector(selectCartLoading);
 
   const [quantity, setQuantity] = useState(0);
   const [imgActive, setImageActive] = useState();
@@ -61,15 +64,21 @@ const ProductDetail = () => {
 
   const addToCartHandler = () => {
     if (user) {
-      addToCart({
-        productId: id,
-        qty: quantity,
-        onSuccess: () => {
-          notification.open({
-            type: "success",
-            message: "Add To Cart Success",
-          });
-        },
+      dispatch(
+        postAddItem({
+          productId: id,
+          qty: quantity,
+        })
+      ).then(() => {
+        notification.open({
+          type: "success",
+          message: "Add To Cart Success",
+        });
+      });
+    } else {
+      notification.open({
+        type: "error",
+        message: "Please login!",
       });
     }
   };
@@ -106,24 +115,24 @@ const ProductDetail = () => {
             <InputGroup className="mb-3 position-relative">
               <Form.Control placeholder="QUANTITY" disabled />
               <Button
-                loading={isLoading}
+                loading={isLoadingCart}
                 onClick={addToCartHandler}
-                variant="dark"
+                className={classes.button}
               >
                 Add To Cart
               </Button>
               <div className={classes["qty-group"]}>
                 <Button
                   onClick={decreaseHandler}
-                  variant="ghost"
+                  type="ghost"
                   className="p-0 d-flex align-items-center justify-content-center mx-1"
                 >
                   <CaretLeftOutlined />
                 </Button>
-                <span>{quantity}</span>
+                <span className={classes.quantity}>{quantity}</span>
                 <Button
                   onClick={increaseHandler}
-                  variant="ghost"
+                  type="ghost"
                   className="p-0 d-flex align-items-center justify-content-center mx-1"
                 >
                   <CaretRightOutlined />

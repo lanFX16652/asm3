@@ -1,0 +1,21 @@
+.wrapper {
+  position: fixed;
+  bottom: 50px;
+  right: 50px;
+  z-index: 3;
+  width: 500px;
+  text-align: right;
+}
+
+.chat-view {
+  height: 468px;
+}
+
+:global(.ant-card .ant-card-body) {
+  padding: 0;
+  height: 500px;
+}
+
+:global(.ant-form-item) {
+  margin-bottom: 0;
+}

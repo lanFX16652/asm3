@@ -3,20 +3,22 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const orderSchema = new Schema({
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "user",
-    },
-    products: [
+    fullname: String,
+    email: String,
+    phoneNumber: String,
+    address: String,
+    userId: String,
+    cart: [
         {
-            id: {
-                type: [Schema.Types.ObjectId],
-                ref: "product",
-            },
-            qty: number
+            product: Object,
+            qty: { type: Number, default: 0 }
         },
     ],
-    totalAmount: number
-});
+    totalPrice: Number,
+},
+    {
+        timestamps: true,
+    }
+);
 
 export default mongoose.model("order", orderSchema);

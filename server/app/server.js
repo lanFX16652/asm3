@@ -6,14 +6,9 @@ import session from 'express-session'
 import cookieParser from "cookie-parser";
 import authenticateRoute from "./routers/auth.js";
 import productRoute from "./routers/product.js";
-//  constance
-const MONGODB_URI = "mongodb://127.0.0.1:27017/asm3"
-
-//  config .env
-dotenv.config()
-
-const app = express();
-const PORT = process.env.PORT || 5000;
+import chatRoute from "./routers/chat.js";
+import { Server } from "socket.io";
+import http from 'http';
 
 // Create mongodb session store
 // const MongoDBStore = require('connect-mongodb-session')(session);
@@ -21,17 +16,37 @@ import MongoDBStore from 'connect-mongodb-session';
 import mediaRoute from "./routers/media.js";
 import userModel from "./models/userModel.js";
 import cartRoute from "./routers/cart.js";
+import { socketHandler } from "./socket/socket.js";
 
+//  constance
+const MONGODB_URI = "mongodb://127.0.0.1:27017/asm3"
+
+//  config .env
+dotenv.config()
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: ['http://localhost:3000', 'http://localhost:3001']
+    }
+});
+
+global.socket = io
+
+console.log(global.socket)
+
+const PORT = process.env.PORT || 5000;
 
 app.use(cors(
     {
-        origin: 'http://localhost:3000',
+        origin: ['http://localhost:3000', 'http://localhost:3001'],
         credentials: true
     }
 ));
 app.use(express.json());
 app.use(cookieParser())
-
+app.use(express.static('public'))
 
 const mongodbStore = MongoDBStore(session)
 const store = new mongodbStore({
@@ -39,8 +54,7 @@ const store = new mongodbStore({
     collection: 'sessions'
 });
 
-// add middleware session
-app.use(session({
+const sessionMiddleware = session({
     secret: process.env.SECRET,
     saveUninitialized: false,
     cookie: {
@@ -49,22 +63,41 @@ app.use(session({
     },
     resave: true,
     store
-}));
+})
 
+
+// add middleware session
+app.use((req, res, next) => sessionMiddleware(req, res, next))
+io.use((socket, next) => sessionMiddleware(socket.request, {}, next))
+
+
+// find user in session 
+io.use(async (socket, next) => {
+    const query = socket.handshake.query;
+    if (query) {
+        socket.request.user = await userModel.findById(query?.userId)
+        next();
+    } else {
+        next(new Error("unauthorized"));
+    }
+});
 
 app.use(async (req, res, next) => {
     if (req.session?.userId) {
         const user = await userModel.findById(req.session.userId)
         req.user = user
     }
-
     next()
 })
+
+// init socket 
+io.on("connection", socketHandler);
 
 //init web routes
 app.use(authenticateRoute);
 app.use(productRoute);
-app.use(cartRoute)
+app.use(cartRoute);
+app.use(chatRoute);
 mediaRoute(app)
 
 app.use((err, req, res, next) => {
@@ -77,7 +110,9 @@ mongoose
     .then(result => console.log("Database connect success"))
     .catch(err => console.log("Database connect fail"))
 
-app.listen(PORT, () => {
+
+
+server.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 })
 

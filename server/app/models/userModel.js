@@ -18,14 +18,11 @@ const userSchema = new Schema({
     phone: {
         type: Number
     },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
     orders: {
         type: [Schema.Types.ObjectId],
         ref: 'order'
-    }
+    },
+    role: String
 });
 
 export default mongoose.model("user", userSchema);

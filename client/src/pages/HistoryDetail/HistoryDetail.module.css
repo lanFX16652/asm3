@@ -1,0 +1,14 @@
+.table-heading {
+  background-color: rgba(160, 160, 160, 0.514);
+  text-align: center;
+}
+
+.table-heading th {
+  padding: 1vw;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.table-content td {
+  text-align: center;
+}

@@ -3,13 +3,42 @@ import mongoose from 'mongoose'
 import ProductModel from '../models/productModel.js'
 
 const ObjectId = mongoose.Types.ObjectId
+const category = [
+    {
+        name: "apple",
+        image: "http://localhost:5000/product_1.png",
+    },
+    {
+        name: "iphone",
+        image: "http://localhost:5000/product_2.png",
+    },
+    {
+        name: "ipad",
+        image: "http://localhost:5000/product_3.png",
+    },
+    {
+        name: "watch",
+        image: "http://localhost:5000/product_4.png",
+    },
+    {
+        name: "airpods",
+        image: "http://localhost:5000/product_5.png",
+    },
+];
 
 const getProducts = async (req, res, next) => {
-    const { page, limit } = req.query
+    const { page, limit, search } = req.query
+
+    const findOptions = search ? {
+        name: {
+            $regex: search,
+            $options: 'i'
+        }
+    } : {}
 
     try {
-        const products = await ProductModel.find({})
-        const totalProducts = await ProductModel.count()
+        const products = await ProductModel.find(findOptions).skip((page - 1) * limit).limit(limit)
+        const totalProducts = await ProductModel.count(findOptions)
         const totalPage = totalProducts / +limit
 
         return res.json({ products, totalProducts, totalPage, page })
@@ -62,6 +91,7 @@ const getRelatedProduct = async (req, res, next) => {
     const category = req.query.category;
     const productId = req.query.id;
 
+
     try {
         const relatedProducts = await ProductModel.find({
             category: {
@@ -95,4 +125,8 @@ const getRelatedProduct = async (req, res, next) => {
     }
 }
 
-export { getProducts, createProduct, getProductDetail, getRelatedProduct };
+const getCategory = async (req, res) => {
+    res.json({ category: category })
+}
+
+export { getProducts, createProduct, getProductDetail, getRelatedProduct, getCategory };

@@ -59,6 +59,36 @@ const login = async (req, res) => {
         })
 }
 
+const dashBoardLogin = async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({ email: email })
+        .then((user) => {
+            if (!user) {
+                return res.status(400).json({ message: "Invalid Email!" })
+            }
+            bcrypt
+                .compare(password, user.password)
+                .then((doMatch) => {
+                    if (doMatch) {
+                        if (user.role === 'customer') return res.status(403).json('Forbidden error')
+
+                        req.session.userId = user._id.toString();
+                        return res.status(200).json({
+                            user: user
+                        })
+                    } else {
+                        return res.status(400).json({ message: "Invalid Password!" })
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(500).json({ message: "Internal Server Error" })
+                })
+        })
+}
+
 const logout = async (req, res, next) => {
     req.session.destroy(function (err) {
         if (err) {
@@ -72,4 +102,4 @@ const logout = async (req, res, next) => {
     })
 }
 
-export { signup, login, logout }
+export { signup, login, logout, dashBoardLogin }

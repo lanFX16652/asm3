@@ -1,28 +1,33 @@
 import React from "react";
 import classes from "./History.module.css";
-import { Space, Table, Tag } from "antd";
+import { Badge, Space, Table, Tag } from "antd";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const History = () => {
+  const orders = useSelector((state) => state.order.orders);
+  const navigate = useNavigate();
+
   const columns = [
     {
       title: "ID ORDER",
-      dataIndex: "idOrder",
-      key: "idOrder",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "ID USER",
-      dataIndex: "idUser",
-      key: "idUser",
+      dataIndex: "userId",
+      key: "userId",
     },
     {
-      title: "NAME",
-      dataIndex: "name",
-      key: "name",
+      title: "FULLNAME",
+      dataIndex: "fullname",
+      key: "fullname",
     },
     {
       title: "PHONE",
-      dataIndex: "Phone",
-      key: "Phone",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
     },
     {
       title: "ADDRESS",
@@ -30,9 +35,9 @@ const History = () => {
       key: "address",
     },
     {
-      title: "TOTAL",
-      dataIndex: "total",
-      key: "total",
+      title: "TOTAL PRICE",
+      dataIndex: "totalPrice",
+      key: "totalPrice",
     },
     {
       title: "DELIVERY",
@@ -43,27 +48,15 @@ const History = () => {
       title: "STATUS",
       dataIndex: "status",
       key: "status",
+      render: (value) => <Badge status="success" text={value} />,
     },
     {
       title: "DETAIL",
       dataIndex: "detail",
       key: "detail",
-      render: (detail, record) => <button>View</button>,
-    },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      idOrder: "",
-      idUser: "",
-      name: "John Brown",
-      phone: "",
-      address: "New York No. 1 Lake Park",
-      total: "",
-      delivery: "",
-      status: "",
-      detail: "",
+      render: (detail, record) => (
+        <button onClick={() => navigate(`/history/${record._id}`)}>View</button>
+      ),
     },
   ];
 
@@ -78,7 +71,7 @@ const History = () => {
         </div>
       </div>
 
-      <Table columns={columns} dataSource={data} />
+      <Table scroll={{ x: true }} columns={columns} dataSource={orders} />
     </>
   );
 };

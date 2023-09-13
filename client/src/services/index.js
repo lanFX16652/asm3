@@ -10,6 +10,7 @@ export const LocalStorageService = {
       return null;
     }
   },
+  remove: (key) => localStorage.removeItem(key)
 };
 
 

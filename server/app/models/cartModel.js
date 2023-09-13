@@ -9,13 +9,10 @@ const cartModel = new Schema({
     },
     products: [
         {
-            id: {
-                type: [Schema.Types.ObjectId],
-                ref: "product",
-            },
-            qty: Number
+            product: Object,
+            qty: { type: Number, default: 0 }
         },
     ],
 });
 
-export default mongoose.model("order", cartModel);
+export default mongoose.model("cart", cartModel);

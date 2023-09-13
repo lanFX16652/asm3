@@ -4,12 +4,17 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Container from "react-bootstrap/esm/Container";
 import { selectUser } from "../../store/userSlice";
-import { Menu, Popover, Space } from "antd";
+import { Menu, Popover, Space, Button, Badge, Spin } from "antd";
 import { useLogout } from "../../apis/logout";
+import { ShoppingCartOutlined, UserOutlined, CaretDownOutlined } from '@ant-design/icons'
+import { selectCart, selectCartLoading, selectQtyCartItem } from "../../store/cartSlice";
 
 function MainNavigation() {
+
   const navigate = useNavigate();
-  const user = useSelector(selectUser)
+  const user = useSelector(selectUser);
+  const qtyCartItem = useSelector(selectQtyCartItem);
+  const isLoadingCart = useSelector(selectCartLoading);
   const [logout] = useLogout()
 
   return (
@@ -31,7 +36,6 @@ function MainNavigation() {
             <NavLink
               to='/shoppage'
               className={(navData) => {
-
                 return (navData.isActive ? classes.active : "")
               }}
             >
@@ -42,7 +46,7 @@ function MainNavigation() {
 
         <h1>BOUTIQUE</h1>
 
-        <Space  >
+        <Space >
           <NavLink
             to='/checkout'
             className={(navData) => {
@@ -50,10 +54,13 @@ function MainNavigation() {
               return (navData.isActive ? classes.active : "")
             }}
           >
-            Cart
+            <Badge count={isLoadingCart ? <Spin></Spin> : qtyCartItem}>
+              <Button type="text" icon={<ShoppingCartOutlined />} >
+                Cart
+              </Button>
+            </Badge>
           </NavLink>
           {
-
             user ? (
               <Popover trigger='click' content={
                 < Menu items={
@@ -68,7 +75,11 @@ function MainNavigation() {
                     },
                   ]} />
               } >
-                {user.fullname}
+                <Button type="text" icon={<UserOutlined />}>
+
+                  {user.fullname}
+                  <CaretDownOutlined />
+                </Button>
               </Popover>
             ) : (
               <NavLink
