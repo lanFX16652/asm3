@@ -1,42 +1,80 @@
-import roomModel from "../models/roomModel.js"
-
+import { ChatModel } from "../models/chatModel.js"
 class ChatController {
-    #roomModel;
-    constructor(roomModel) {
-        this.#roomModel = roomModel
+    #chatModel;
+
+    constructor(chatModel) {
+        this.#chatModel = chatModel
     }
 
-    createRoom = async (req, res, next) => {
-
+    createChat = async (req, res, next) => {
         try {
-            const newRoom = new roomModel({
-                userCreate: req.user._id,
+            const newChat = new ChatModel({
                 messages: [{
+                    author: req?.user?._id,
+                    authorType: req.body.authorType,
                     content: req.body.content,
-                    userId: req.user._id
+                    createdAt: new Date()
                 }]
             })
 
-            await newRoom.save()
-            global.socket.emit("room-created", {
-                newRoom
+            await newChat.save()
+
+            global.socket.emit("chat-created", {
+                newChat
             });
 
-            return res.status(201).json(newRoom)
+            return res.status(201).json(newChat)
         } catch (error) {
             next(error)
         }
     }
 
 
-    async getListChat(req, res, next) {
+    newMessage = async (req, res, next) => {
+        const { content, authorType, roomId } = req.body
+
+        const message = {
+            content,
+            authorType,
+            author: req?.user?._id,
+            createdAt: new Date()
+        }
+
         try {
-            const chats = await this.#roomModel.find()
+            await this.#chatModel.findByIdAndUpdate(roomId, {
+                $push: {
+                    messages: message
+                }
+            })
+
+            return res.json(message)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getChatDetail = async (req, res, next) => {
+        const { roomId } = req.params
+
+        try {
+            const chatFound = await this.#chatModel.findById(roomId)
+
+            return res.json(chatFound)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getListChat = async (req, res, next) => {
+        try {
+            const chats = await this.#chatModel.find()
             return res.json(chats)
         } catch (error) {
             next(error)
         }
     }
+
+
 }
 
-export default new ChatController(roomModel)
+export default new ChatController(ChatModel)

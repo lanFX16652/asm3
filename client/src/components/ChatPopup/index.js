@@ -1,13 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classes from './ChatPopup.module.css'
 import { Outlet } from 'react-router-dom'
 import { CloseCircleOutlined, MessageTwoTone } from '@ant-design/icons'
 import { Card, Space, Typography } from 'antd'
 import { MessageInput } from './MessageInput'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectChatState, setRoomData } from '../../store/chatSlice'
+import { styled } from 'styled-components'
 import { LocalStorageService } from '../../services'
+import axiosInstance from '../../apis/axios'
 
 const ChatPopup = () => {
+    const dispatch = useDispatch()
     const [openChat, setOpenChat] = useState(false)
+    const { roomData } = useSelector(selectChatState)
+    const roomId = LocalStorageService.load('roomId')
+
+    useEffect(() => {
+        if (roomId) {
+            axiosInstance.get(`/chat/${roomId}`).then(result => {
+                dispatch(setRoomData(result.data))
+            })
+        }
+    }, [roomId, dispatch]);
 
     return (
         <>
@@ -22,7 +37,11 @@ const ChatPopup = () => {
                         className={classes.popup}
                     >
                         <div className={classes['chat-view']}>
-
+                            {roomData?.messages?.map(message => {
+                                return <MessageItemStyled key={message?._id} $message={message} >
+                                    {message.content}
+                                </MessageItemStyled>
+                            })}
                         </div>
                         <MessageInput />
                     </Card> :
@@ -34,3 +53,8 @@ const ChatPopup = () => {
 }
 
 export default ChatPopup
+
+
+const MessageItemStyled = styled.div`
+
+`

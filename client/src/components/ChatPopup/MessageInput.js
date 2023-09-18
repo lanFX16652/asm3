@@ -2,10 +2,12 @@ import { Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../../apis/axios'
 import { LocalStorageService } from '../../services'
+import { useDispatch } from 'react-redux'
+import { setRoomData, updateMessages } from '../../store/chatSlice'
 
 export const MessageInput = () => {
     const [roomId, setRoomId] = useState('')
-
+    const dispatch = useDispatch()
     useEffect(() => {
         const roomIdLocalStorage = LocalStorageService.load('roomId')
 
@@ -20,11 +22,21 @@ export const MessageInput = () => {
 
         if (!roomId) {
             const response = await axiosInstance.post('/chat/create-room', {
-                content: value
+                content: value,
+                authorType: 'client'
             })
 
             LocalStorageService.store('roomId', response.data._id)
             setRoomId(response.data._id)
+            dispatch(setRoomData(response.data))
+        } else {
+            const response = await axiosInstance.post('/chat/new-message', {
+                content: value,
+                roomId,
+                authorType: 'client'
+            })
+
+            dispatch(updateMessages(response.data))
         }
     }
 

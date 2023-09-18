@@ -1,17 +1,22 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-import modalReducer from "./modalSlice";
 import { cartReducer } from "./cartSlice";
 import { orderReducer } from "./orderSlice";
-
+import { chatReducer } from './chatSlice'
 const store = configureStore({
   reducer: {
     user: userReducer,
-    // modal: modalReducer,
     cart: cartReducer,
-    order: orderReducer
+    order: orderReducer,
+    chat: chatReducer
   },
+}, {
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    }),
 });
+
 
 export default store;

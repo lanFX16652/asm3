@@ -16,7 +16,6 @@ import MongoDBStore from 'connect-mongodb-session';
 import mediaRoute from "./routers/media.js";
 import userModel from "./models/userModel.js";
 import cartRoute from "./routers/cart.js";
-import { socketHandler } from "./socket/socket.js";
 
 //  constance
 const MONGODB_URI = "mongodb://127.0.0.1:27017/asm3"
@@ -33,8 +32,6 @@ const io = new Server(server, {
 });
 
 global.socket = io
-
-console.log(global.socket)
 
 const PORT = process.env.PORT || 5000;
 
@@ -71,17 +68,6 @@ app.use((req, res, next) => sessionMiddleware(req, res, next))
 io.use((socket, next) => sessionMiddleware(socket.request, {}, next))
 
 
-// find user in session 
-io.use(async (socket, next) => {
-    const query = socket.handshake.query;
-    if (query) {
-        socket.request.user = await userModel.findById(query?.userId)
-        next();
-    } else {
-        next(new Error("unauthorized"));
-    }
-});
-
 app.use(async (req, res, next) => {
     if (req.session?.userId) {
         const user = await userModel.findById(req.session.userId)
@@ -91,7 +77,9 @@ app.use(async (req, res, next) => {
 })
 
 // init socket 
-io.on("connection", socketHandler);
+io.on("connection", (socket) => {
+    console.log(socket.id)
+});
 
 //init web routes
 app.use(authenticateRoute);
