@@ -9,6 +9,8 @@
 
 .chat-view {
   height: 468px;
+  overflow-y: auto;
+  padding-bottom: 8px;
 }
 
 :global(.ant-card .ant-card-body) {

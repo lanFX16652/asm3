@@ -1,17 +1,20 @@
-
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
-import modalReducer from "./modalSlice";
 import { cartReducer } from "./cartSlice";
 import { orderReducer } from "./orderSlice";
+import { socketReducer } from "./socketSlice";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
-    // modal: modalReducer,
     cart: cartReducer,
-    order: orderReducer
+    order: orderReducer,
+    socket: socketReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;
