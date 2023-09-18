@@ -27,6 +27,7 @@ const AuthWrapper = () => {
     } else {
       dispatch(resetCart());
       dispatch(resetOrder());
+      LocalStorageService.remove("roomId");
     }
 
     return () => {

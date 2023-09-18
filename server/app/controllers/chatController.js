@@ -1,80 +1,79 @@
-import { ChatModel } from "../models/chatModel.js"
+import { ChatModel } from "../models/chatModel.js";
 class ChatController {
-    #chatModel;
+  #chatModel;
 
-    constructor(chatModel) {
-        this.#chatModel = chatModel
-    }
+  constructor(chatModel) {
+    this.#chatModel = chatModel;
+  }
 
-    createChat = async (req, res, next) => {
-        try {
-            const newChat = new ChatModel({
-                messages: [{
-                    author: req?.user?._id,
-                    authorType: req.body.authorType,
-                    content: req.body.content,
-                    createdAt: new Date()
-                }]
-            })
-
-            await newChat.save()
-
-            global.socket.emit("chat-created", {
-                newChat
-            });
-
-            return res.status(201).json(newChat)
-        } catch (error) {
-            next(error)
-        }
-    }
-
-
-    newMessage = async (req, res, next) => {
-        const { content, authorType, roomId } = req.body
-
-        const message = {
-            content,
-            authorType,
+  createChat = async (req, res, next) => {
+    try {
+      const newChat = new ChatModel({
+        messages: [
+          {
             author: req?.user?._id,
-            createdAt: new Date()
-        }
+            authorType: req.body.authorType,
+            content: req.body.content,
+            createdAt: new Date(),
+          },
+        ],
+      });
 
-        try {
-            await this.#chatModel.findByIdAndUpdate(roomId, {
-                $push: {
-                    messages: message
-                }
-            })
+      await newChat.save();
 
-            return res.json(message)
-        } catch (error) {
-            next(error)
-        }
+      global.socket.emit("chat-created", {
+        newChat,
+      });
+
+      return res.status(201).json(newChat);
+    } catch (error) {
+      next(error);
     }
+  };
 
-    getChatDetail = async (req, res, next) => {
-        const { roomId } = req.params
+  newMessage = async (req, res, next) => {
+    const { content, authorType, roomId } = req.body;
 
-        try {
-            const chatFound = await this.#chatModel.findById(roomId)
+    const message = {
+      content,
+      authorType,
+      author: req?.user?._id,
+      createdAt: new Date(),
+    };
 
-            return res.json(chatFound)
-        } catch (error) {
-            next(error)
-        }
+    try {
+      await this.#chatModel.findByIdAndUpdate(roomId, {
+        $push: {
+          messages: message,
+        },
+      });
+
+      return res.json(message);
+    } catch (error) {
+      next(error);
     }
+  };
 
-    getListChat = async (req, res, next) => {
-        try {
-            const chats = await this.#chatModel.find()
-            return res.json(chats)
-        } catch (error) {
-            next(error)
-        }
+  getChatDetail = async (req, res, next) => {
+    const { roomId } = req.params;
+
+    try {
+      const chatFound = await this.#chatModel.findById(roomId);
+
+      return res.json(chatFound);
+    } catch (error) {
+      next(error);
     }
+  };
 
-
+  getListChat = async (req, res, next) => {
+    try {
+      const chats = await this.#chatModel.find();
+      return res.json(chats);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
-export default new ChatController(ChatModel)
+export default new ChatController(ChatModel);
