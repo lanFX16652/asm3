@@ -42,7 +42,7 @@ const ChatPopup = () => {
               {roomData?.messages?.map((message) => {
                 return (
                   <MessageItemStyled key={message?._id} $message={message}>
-                    {message.content}
+                    {message.content}  {message.authorType === 'client' ? ' :You' : ''}
                   </MessageItemStyled>
                 );
               })}
@@ -77,4 +77,7 @@ const SpaceStyled = styled(Space)`
   }
 `;
 
-const MessageItemStyled = styled.div``;
+const MessageItemStyled = styled.div`
+  margin-top: 8px;
+  text-align: ${(props) => props.$message.authorType === 'client' ? 'right' : 'left'}
+`;

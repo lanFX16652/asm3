@@ -21,9 +21,7 @@ class ChatController {
 
       await newChat.save();
 
-      global.socket.emit("chat-created", {
-        newChat,
-      });
+      global.socket.emit("chat-created", newChat);
 
       return res.status(201).json(newChat);
     } catch (error) {

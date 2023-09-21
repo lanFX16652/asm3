@@ -7,6 +7,8 @@ import { setRoomData, updateMessages } from '../../store/chatSlice'
 
 export const MessageInput = () => {
     const [roomId, setRoomId] = useState('')
+    const [content, setContent] = useState('')
+
     const dispatch = useDispatch()
     useEffect(() => {
         const roomIdLocalStorage = LocalStorageService.load('roomId')
@@ -38,9 +40,11 @@ export const MessageInput = () => {
 
             dispatch(updateMessages(response.data))
         }
+
+        setContent('')
     }
 
     return (
-        <Input.Search allowClear enterButton="Send" onSearch={onChat} width={'100%'} placeholder="enter your message" />
+        <Input.Search value={content} onChange={(e) => setContent(e.target.value)} allowClear enterButton="Send" onSearch={onChat} width={'100%'} placeholder="enter your message" />
     )
 }

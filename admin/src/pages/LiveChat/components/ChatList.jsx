@@ -1,32 +1,41 @@
-import React, { useEffect, useState } from "react";
-import { useSocket } from "../../../components/AuthWrapper";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import axiosInstance from "../../../apis/axios";
 import { Typography } from "antd";
 import { styled } from "styled-components";
+import { selectChatState, updateChatList } from "../../../store/chatSlice";
+import { useNavigate } from "react-router-dom";
 
 export const ChatList = () => {
-  const socket = useSocket();
-  const [listChat, setListChat] = useState([]);
-  socket?.on("room-created", (data) => {
-    setListChat([...listChat, data.newRoom]);
-  });
-
+  const { chatList } = useSelector(selectChatState);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     axiosInstance
       .get("/chat/list")
       .then((response) => {
-        setListChat(response.data);
+        dispatch(updateChatList({ data: response.data, type: "array" }));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+
+    const onChatCreate = (data) => {
+      dispatch(updateChatList({ data: data, type: "object" }));
+    };
+
+    global.socketInstance.on("chat-created", onChatCreate);
+
+    return () => {
+      global.socketInstance.off("chat-created", onChatCreate);
+    };
+  }, [dispatch]);
 
   return (
     <div>
-      {listChat?.map((chat) => {
+      {chatList?.map((chat) => {
         return (
-          <ChatItem>
+          <ChatItem key={chat._id} onClick={() => navigate(`${chat._id}`)}>
             <Typography.Text ellipsis={{ tooltip: true }}>
               {chat._id}
             </Typography.Text>

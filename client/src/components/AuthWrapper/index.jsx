@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectUser, setUser } from "../../store/userSlice";
 import { getCart, resetCart } from "../../store/cartSlice";
 import { getOrder, resetOrder } from "../../store/orderSlice";
-import io from "socket.io-client";
-import { setSocket } from "../../store/chatSlice";
 
 const AuthWrapper = () => {
   const userLocalStorage = LocalStorageService.load("user");
@@ -14,9 +12,6 @@ const AuthWrapper = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const socket = io("ws://localhost:5000");
-    dispatch(setSocket(socket));
-
     if (!userRedux) {
       dispatch(setUser(userLocalStorage));
     }
@@ -27,12 +22,7 @@ const AuthWrapper = () => {
     } else {
       dispatch(resetCart());
       dispatch(resetOrder());
-      LocalStorageService.remove("roomId");
     }
-
-    return () => {
-      socket.disconnect();
-    };
   }, [userRedux, userLocalStorage, dispatch]);
 
   return <Outlet />;

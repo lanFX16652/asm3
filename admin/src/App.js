@@ -7,6 +7,7 @@ import AuthWrapper from './components/AuthWrapper';
 import UnauthorizedPage from './pages/UnauthorizedPage/UnauthorizedPage';
 import Dashboard from './pages/Dashboard/Dashboard';
 import LiveChat from './pages/LiveChat/LiveChat';
+import { ChatView } from './pages/LiveChat/ChatView';
 
 function App() {
   return (
@@ -18,12 +19,15 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/products" element={<Products />} />
             <Route path="/unauthorized" element={<UnauthorizedPage />} />
-            <Route path="/chats" element={<LiveChat />} />
+            <Route path="/chats" element={<LiveChat />}>
+              <Route path=':chatId' element={<ChatView />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
     </BrowserRouter>
   );
 }
+
 
 export default App;

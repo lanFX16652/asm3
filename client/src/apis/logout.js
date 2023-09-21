@@ -13,6 +13,7 @@ export const useLogout = () => {
             if (response.status === 200) {
                 dispatch(setUser(null))
                 LocalStorageService.remove("user");
+                LocalStorageService.remove("roomId");
             }
         } catch (error) {
             console.log(error)

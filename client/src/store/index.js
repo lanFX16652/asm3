@@ -11,7 +11,6 @@ const store = configureStore({
     order: orderReducer,
     chat: chatReducer
   },
-}, {
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false
