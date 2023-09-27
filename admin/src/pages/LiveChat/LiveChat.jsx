@@ -1,6 +1,5 @@
 import { Col, Input, Row } from "antd";
 import React from "react";
-import { ChatInput } from "./components/ChatInput";
 import classes from "./LiveChat.module.css";
 import { ChatList } from "./components/ChatList";
 import { Outlet } from "react-router-dom";
@@ -18,7 +17,6 @@ const LiveChat = () => {
         </Col>
         <Col className={classes["right-content"]} span={20}>
           <Outlet />
-          <ChatInput />
         </Col>
       </Row>
     </div>

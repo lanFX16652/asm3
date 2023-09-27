@@ -10,6 +10,7 @@ export const ChatList = () => {
   const { chatList } = useSelector(selectChatState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   useEffect(() => {
     axiosInstance
       .get("/chat/list")

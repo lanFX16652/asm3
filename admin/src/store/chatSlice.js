@@ -19,11 +19,19 @@ const chatSlice = createSlice({
             } else if (action.payload.type === 'array') {
                 state.chatList = [...state.chatList, ...action.payload.data]
             }
+        },
+        updateChatDetail: (state, action) => {
+            state.chatList = state.chatList.map(chat => {
+                if (chat._id === action.payload.chatId) {
+                    return { ...chat, messages: [...chat.messages, action.payload.message] }
+                }
 
+                return chat
+            })
         }
     }
 })
 
 export const selectChatState = (state) => state.chat
 export const chatReducer = chatSlice.reducer
-export const { setRoomData, updateChatList } = chatSlice.actions
+export const { setRoomData, updateChatList, updateChatDetail } = chatSlice.actions
