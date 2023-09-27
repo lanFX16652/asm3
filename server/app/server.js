@@ -25,12 +25,13 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+//tạo server socket
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: ["http://localhost:3000", "http://localhost:3001"], // domain 
   },
 });
-
+//gán vào global
 global.socket = io;
 
 const PORT = process.env.PORT || 5000;
@@ -77,6 +78,7 @@ app.use(async (req, res, next) => {
 // init socket
 io.on("connection", (socket) => {
   console.log(socket.id);
+  console.log(io.engine.clientsCount)
 });
 
 //init web routes

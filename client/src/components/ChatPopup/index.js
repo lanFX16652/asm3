@@ -14,15 +14,15 @@ const ChatPopup = () => {
   const dispatch = useDispatch();
   const [openChat, setOpenChat] = useState(false);
   const { roomData } = useSelector(selectChatState);
-  const roomId = LocalStorageService.load("roomId");
+  const chatId = LocalStorageService.load("chatId");
 
   useEffect(() => {
-    if (roomId) {
-      axiosInstance.get(`/chat/${roomId}`).then((result) => {
+    if (chatId) {
+      axiosInstance.get(`/chat/${chatId}`).then((result) => {
         dispatch(setRoomData(result.data));
       });
     }
-  }, [roomId, dispatch]);
+  }, [chatId, dispatch]);
 
   return (
     <>
@@ -42,7 +42,7 @@ const ChatPopup = () => {
               {roomData?.messages?.map((message) => {
                 return (
                   <MessageItemStyled key={message?._id} $message={message}>
-                    {message.content}  {message.authorType === 'client' ? ' :You' : ''}
+                    {message.content}  {message.authorType === 'Client' ? ' :You' : ''}
                   </MessageItemStyled>
                 );
               })}
@@ -79,5 +79,5 @@ const SpaceStyled = styled(Space)`
 
 const MessageItemStyled = styled.div`
   margin-top: 8px;
-  text-align: ${(props) => props.$message.authorType === 'client' ? 'right' : 'left'}
+  text-align: ${(props) => props.$message.authorType === 'Client' ? 'right' : 'left'}
 `;

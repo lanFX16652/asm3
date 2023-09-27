@@ -6,15 +6,15 @@ import { useDispatch } from 'react-redux'
 import { setRoomData, updateMessages } from '../../store/chatSlice'
 
 export const MessageInput = () => {
-    const [roomId, setRoomId] = useState('')
+    const [chatId, setchatId] = useState('')
     const [content, setContent] = useState('')
 
     const dispatch = useDispatch()
     useEffect(() => {
-        const roomIdLocalStorage = LocalStorageService.load('roomId')
+        const chatIdLocalStorage = LocalStorageService.load('chatId')
 
-        if (roomIdLocalStorage) {
-            setRoomId(roomIdLocalStorage)
+        if (chatIdLocalStorage) {
+            setchatId(chatIdLocalStorage)
         }
     }, [])
 
@@ -22,20 +22,20 @@ export const MessageInput = () => {
 
         if (!value) return
 
-        if (!roomId) {
+        if (!chatId) {
             const response = await axiosInstance.post('/chat/create-room', {
                 content: value,
-                authorType: 'client'
+                authorType: 'Client'
             })
 
-            LocalStorageService.store('roomId', response.data._id)
-            setRoomId(response.data._id)
+            LocalStorageService.store('chatId', response.data._id)
+            setchatId(response.data._id)
             dispatch(setRoomData(response.data))
         } else {
             const response = await axiosInstance.post('/chat/new-message', {
                 content: value,
-                roomId,
-                authorType: 'client'
+                chatId,
+                authorType: 'Client'
             })
 
             dispatch(updateMessages(response.data))

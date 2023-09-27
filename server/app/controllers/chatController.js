@@ -30,7 +30,7 @@ class ChatController {
   };
 
   newMessage = async (req, res, next) => {
-    const { content, authorType, roomId } = req.body;
+    const { content, authorType, chatId } = req.body;
 
     const message = {
       content,
@@ -40,11 +40,13 @@ class ChatController {
     };
 
     try {
-      await this.#chatModel.findByIdAndUpdate(roomId, {
+      await this.#chatModel.findByIdAndUpdate(chatId, {
         $push: {
           messages: message,
         },
       });
+
+      global.socket.emit('new-message', message);
 
       return res.json(message);
     } catch (error) {
@@ -53,10 +55,10 @@ class ChatController {
   };
 
   getChatDetail = async (req, res, next) => {
-    const { roomId } = req.params;
+    const { chatId } = req.params;
 
     try {
-      const chatFound = await this.#chatModel.findById(roomId);
+      const chatFound = await this.#chatModel.findById(chatId);
 
       return res.json(chatFound);
     } catch (error) {
